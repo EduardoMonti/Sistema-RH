@@ -24,7 +24,7 @@ public class Candidate {
 
     @ManyToOne
     @JoinColumn(name = "vacancy_id")
-    Vacancy vacancy;
+    private Vacancy vacancy;
 
     public String getRg() {
         return rg;

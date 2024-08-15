@@ -1,10 +1,8 @@
 package com.AppRH.AppRH.models;
 
-import com.AppRH.AppRH.models.Candidate;
 import jakarta.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,7 +12,7 @@ public class Vacancy implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Utilize a estratégia correta
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "code")
     private Long code;
 
