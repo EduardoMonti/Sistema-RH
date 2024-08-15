@@ -54,4 +54,59 @@ public class VacancyController {
             mv.addObject("candidates", candidates);
             return mv;
         }
+
+        @RequestMapping("/deleteVacancy")
+        public String deleteVacancy(long code) {
+            Vacancy vacancy = vacancyRepository.findByCode(code);
+            vacancyRepository.delete(vacancy);
+            return  "redirect:/vacancy";
+        }
+
+        public String vacancyDetails(@PathVariable("code")long code, @Valid Candidate candidate,
+                                     BindingResult result, RedirectAttributes attributes){
+        if(result.hasErrors()){
+            attributes.addFlashAttribute("message", "Verify the fields");
+            return "redirect:/{code}";
+        }
+            if(candidateRepository.findByRg(candidate.getRg()) != null){
+                attributes.addFlashAttribute("error message", "duplicate RG");
+                return "redirect:/{code}";
+            }
+
+            Vacancy vacancy = vacancyRepository.findByCode(code);
+            candidate.setVacancy(vacancy);
+            attributes.addFlashAttribute("message", "Candidate added with success!");
+
+            return "redirect:/{code}";
+        }
+
+        //deleting candidate by RG
+        @RequestMapping("/deleteCandidate")
+        public String deleteCandidateByRG(String rg){
+                Candidate candidate = candidateRepository.findByRg(rg);
+                Vacancy vacancy = candidate.getVacancy();
+                String code = "" + vacancy.getCode();
+                candidateRepository.delete(candidate);
+                return "redirect:/" + code;
+        }
+
+        //update methods and edit form vacancy
+        @RequestMapping(value = "/edit-vacancy", method = RequestMethod.GET)
+        public ModelAndView editVacancy(long code){
+            Vacancy vacancy = vacancyRepository.findByCode(code);
+            ModelAndView modelAndView = new ModelAndView("vacancy/update-vacancy");
+            modelAndView.addObject("vacancy", vacancy);
+            return modelAndView;
+        }
+
+        //Update vacancy
+        @RequestMapping(value = "/edit-vacancy", method = RequestMethod.POST)
+        public String updateVacancy(@Valid Vacancy vacancy, BindingResult result, RedirectAttributes attributes){
+            vacancyRepository.save(vacancy);
+            attributes.addFlashAttribute("success", "Vacancy updated with success!");
+            long codeLong = vacancy.getCode();
+            String code = "" + codeLong;
+            return  "redirect:/" + code;
+        }
+
 }
